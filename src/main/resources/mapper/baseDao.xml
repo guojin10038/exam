@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>  
+<!DOCTYPE mapper PUBLIC "-//ibatis.apache.org//DTD Mapper 3.0//EN"      
+ "http://ibatis.apache.org/dtd/ibatis-3-mapper.dtd">
+
+<mapper namespace="com.yuan.boot.dao.IBaseDao">
+	<select id="baseFindByKey" resultType="java.util.Map">
+		SELECT * FROM ${table}
+		WHERE ${key}=#{value}
+	</select>
+	<select id="baseFindList" resultType="java.util.Map">
+		SELECT * FROM ${table}
+	</select>
+	<select id="baseFindParam" resultType="java.util.Map">
+		SELECT * FROM ${table} where 1=1
+		<foreach collection="map" index="key" item="value">
+			and ${key}=#{value}
+		</foreach>
+	</select>
+	<select id="baseFindSql" resultType="java.util.Map">
+		${sql}
+	</select>
+	<insert id="baseInsert">
+		<if test="map!=null and map.size()>0">
+			insert into ${table}(
+			<foreach collection="map" index="key" item="value" separator=",">
+				${key}
+			</foreach>
+			)values(
+			<foreach collection="map" index="key" item="value" separator=",">
+				#{value}
+			</foreach>
+			)
+		</if>
+	</insert>
+	<delete id="baseDelete">
+		<if test="map!=null and map.size()>0">
+			delete from  ${table} where 
+			<foreach collection="map" index="key" item="value" separator=" and ">
+			  	${key}=#{value}
+			</foreach>
+		</if>
+	</delete>
+	<delete id="baseDeleteByKey">
+		delete from  ${table}  where ${key}=#{value} ;
+	</delete>
+	<update id="baseUpdateByKey">
+		<if test="map!=null and map.size()>0">
+			update ${table} set
+			<foreach collection="map" index="key1" item="value1"
+				separator=",">
+				${key1}=#{value1}
+			</foreach>
+			where ${key}=#{value} ;
+		</if>
+	</update>
+	<update id="baseUpdate">
+		<if test="map!=null and map.size()>0">
+			update ${table} set
+			<foreach collection="map" index="key" item="value" separator=",">
+				${key}=#{value}
+			</foreach>
+			<if test="params!=null and params.size()>0">
+				where 
+				<foreach collection="params" index="key" item="value" separator="and">
+					 ${key}=#{value}
+				</foreach>
+			</if>
+		</if>
+	</update>
+	<select id="baseCount" resultType="long">
+	SELECT count(*) FROM ${table}
+		<if test="map!=null and map.size()>0">
+			 where 
+			<foreach collection="map" index="key" item="value" separator="and">
+				${key}=#{value}
+			</foreach>
+		</if>
+	</select>
+	<select id="baseCountByKey" resultType="long">
+		SELECT count(*) FROM ${table}
+		WHERE ${key}=#{value}
+	</select>
+</mapper>
